@@ -24,7 +24,7 @@ youtube = build('youtube', 'v3', developerKey=API_KEY)
 greetings = ["Merhaba!", "Selam!", "Nasılsınız?", "Size nasıl yardımcı olabilirim?"]
 
 # Tanınabilir komutlar
-recognizable_commands = ["ara", "topla", "çarp", "saat kaç", "tarih", "hava durumu", "şarkı çal", "ezan vakti"]
+recognizable_commands = ["ara", "topla", "çarp", "saat kaç", "tarih", "hava durumu", "şarkı çal"]
 
 # Fonksiyonlar.
 def assist(user_input):
@@ -61,8 +61,6 @@ def process_command(user_input):
         return get_weather(user_input)
     elif "şarkı çal" in user_input:
         return play_song(user_input)
-    elif "ezan vakti" in user_input:
-        return get_prayer_times(user_input)
 
 #Matematik İşlemleri
 def arithmetic_operation(user_input, operation):
@@ -124,25 +122,6 @@ def get_weather(user_input):
         return f"{city} bölgesinde hava durumu: {description}, sıcaklık: {temperature:.2f} derece"
     else:
         return "Hava durumu bilgisi alınamadı."
-
-#Ezan Vakti
-def get_prayer_times(user_input):
-    speak("Hangi ilin ezan vakitlerini öğrenmek istersiniz? ")
-    city = get_audio().strip()
-    if city:
-        city = unidecode(city)
-        url = f"https://www.diyanethaber.com.tr/namaz-vakitleri/{city}"
-        response = requests.get(url)
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
-            vakit_bilgisi = soup.find('div', {"class": "col-md-4 remaining-time text-white text-center mb-4"})
-            kalan_sure_baslik = vakit_bilgisi.find('span', {"class": "text-uppercase"}).text
-            saat = vakit_bilgisi.find('h3', {"class": "text-white fw-bold h2 mb-0"}).text
-            return f"{city} için {kalan_sure_baslik}: {saat}"
-        else:
-            return "Ezan vakitleri alınamadı."
-    else:
-        return "Lütfen bir il adı belirtin."
 
 #Ses Algılama
 def get_audio():
